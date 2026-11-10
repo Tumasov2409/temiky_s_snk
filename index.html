@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DotaRadar — Мониторинг ликвидности и цен Dota 2</title>
+  <meta name="description" content="Быстрый поиск ликвидных предметов Dota 2, TB аркан с гемами, Onibi и арбитраж цен между Steam, Market.Dota2, Buff163, DMarket">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Ambient background glow effects -->
+  <div class="glow-bg glow-purple"></div>
+  <div class="glow-bg glow-cyan"></div>
+  <div class="glow-bg glow-gold"></div>
+
+  <header class="navbar">
+    <div class="container nav-container">
+      <div class="logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+            <polyline points="2 17 12 22 22 17"></polyline>
+            <polyline points="2 12 12 17 22 12"></polyline>
+          </svg>
+        </div>
+        <div class="logo-text">
+          <span class="logo-title">DOTA<span class="accent-text">RADAR</span></span>
+          <span class="logo-badge">PRO ARBITRAGE</span>
+        </div>
+      </div>
+
+      <nav class="nav-links">
+        <button class="nav-btn active" data-tab="tab-search">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          Поиск & Парсер
+        </button>
+        <button class="nav-btn" data-tab="tab-tb">
+          <span class="tb-dot"></span>
+          TB Арканы & Гемы
+        </button>
+        <button class="nav-btn" data-tab="tab-liquid">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+          Топ Ликвид
+        </button>
+        <button class="nav-btn" data-tab="tab-calc">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="16" y1="14" x2="16" y2="18"></line><path d="M16 10h.01"></path><path d="M12 10h.01"></path><path d="M8 10h.01"></path><path d="M12 14h.01"></path><path d="M8 14h.01"></path><path d="M12 18h.01"></path><path d="M8 18h.01"></path></svg>
+          Калькулятор выгоды
+        </button>
+      </nav>
+
+      <div class="header-currency">
+        <label for="currency-select">Валюта:</label>
+        <select id="currency-select" class="currency-dropdown">
+          <option value="RUB" selected>₽ RUB</option>
+          <option value="USD">$ USD</option>
+          <option value="EUR">€ EUR</option>
+          <option value="CNY">¥ CNY</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <main class="container main-content">
+
+    <!-- HERO SECTION / SEARCH BAR -->
+    <section class="hero-section">
+      <div class="hero-badge">⚡ Мульти-маркет сканер Steam, Market.Dota2, Buff163, DMarket</div>
+      <h1 class="hero-title">Мониторинг цен и ликвидности <span class="gradient-text">Dota 2</span></h1>
+      <p class="hero-desc">
+        Ищи редкие самоцветы в TB Арканах, курьеров Onibi со стилями 20/21 и сравнивай цены на всех торговых площадках в один клик.
+      </p>
+
+      <!-- Search Box with Quick Tags -->
+      <div class="search-card">
+        <div class="search-input-wrapper">
+          <svg class="search-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input 
+            type="text" 
+            id="item-search-input" 
+            placeholder="Введите предмет или гем: например, 'TB Creator's Light', 'Onibi 20', 'Manifold Paradox'..."
+            autocomplete="off"
+          >
+          <button id="clear-search-btn" class="clear-btn" title="Очистить">&times;</button>
+          <button id="run-scan-btn" class="scan-action-btn">
+            <span class="btn-spinner" id="search-spinner"></span>
+            <span class="btn-text">Сканировать</span>
+          </button>
+        </div>
+
+        <!-- Quick Filter Tags -->
+        <div class="quick-tags">
+          <span class="tags-label">Быстрый выбор:</span>
+          <button class="tag-chip active" data-query="TB Creator's Light">💎 TB Creator's Light</button>
+          <button class="tag-chip" data-query="TB Sea Green">🌊 TB Sea Green</button>
+          <button class="tag-chip" data-query="TB Blossom Red">🌸 TB Blossom Red</button>
+          <button class="tag-chip" data-query="TB Rubiline">💖 TB Rubiline</button>
+          <button class="tag-chip" data-query="Onibi 20">🦊 Onibi Style 20</button>
+          <button class="tag-chip" data-query="Onibi 21">👑 Onibi Style 21</button>
+          <button class="tag-chip" data-query="Manifold Paradox">⚔️ PA Arcana</button>
+          <button class="tag-chip" data-query="Feast of Abscession">🪝 Pudge Arcana</button>
+          <button class="tag-chip" data-query="TF2 Key">🔑 TF2 Key</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB CONTENT: SEARCH & SCANNER -->
+    <div id="tab-search" class="tab-pane active">
+      <div class="scanner-status-bar" id="scanner-status">
+        <div class="status-indicator">
+          <span class="pulse-dot"></span>
+          <span class="status-msg" id="status-text">Готов к сканированию. Выберите предмет или введите поисковый запрос.</span>
+        </div>
+        <div class="status-sources">
+          <span class="source-tag steam">Steam Market</span>
+          <span class="source-tag dota2net">Market.Dota2</span>
+          <span class="source-tag buff">Buff163</span>
+          <span class="source-tag dmarket">DMarket</span>
+          <span class="source-tag empire">Pricempire</span>
+        </div>
+      </div>
+
+      <!-- RESULTS CONTAINER -->
+      <div id="results-container" class="results-grid">
+        <!-- Rendered dynamically via JavaScript -->
+      </div>
+    </div>
+
+    <!-- TAB CONTENT: TB ARCANAS & GEMS MATRIX -->
+    <div id="tab-tb" class="tab-pane">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Матрица гемов: Fractal Horns of Inner Abysm (TB)</h2>
+          <p class="section-subtitle">
+            Формула честной цены: <strong>Базовая цена TB (~2 400 ₽) + от 45% до 65% от цены отдельного гема</strong>. 
+            Если предмет продается дешевле — это моментальный окуп.
+          </p>
+        </div>
+        <div class="tb-filter-box">
+          <input type="text" id="tb-gem-filter" class="table-search" placeholder="Фильтр по названию гема...">
+        </div>
+      </div>
+
+      <div class="table-wrapper">
+        <table class="radar-table" id="tb-gems-table">
+          <thead>
+            <tr>
+              <th>Цвет</th>
+              <th>Название гема</th>
+              <th>Редкость</th>
+              <th>Цена гема отдельно</th>
+              <th>Честная цена TB с гемом</th>
+              <th>Ликвидность</th>
+              <th>Прямой переход на маркеты</th>
+            </tr>
+          </thead>
+          <tbody id="tb-gems-tbody">
+            <!-- Populated via JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB CONTENT: TOP LIQUID ITEMS -->
+    <div id="tab-liquid" class="tab-pane">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Топ самых ликвидных предметов Dota 2</h2>
+          <p class="section-subtitle">
+            Предметы с максимальным суточным объемом торгов — их можно мгновенно сдать в деньги или обменять на редкие вещи.
+          </p>
+        </div>
+        <div class="category-filters" id="liquid-category-filters">
+          <button class="cat-pill active" data-cat="all">Все</button>
+          <button class="cat-pill" data-cat="arcana">Арканы</button>
+          <button class="cat-pill" data-cat="currency">Валюта трейда</button>
+          <button class="cat-pill" data-cat="courier">Курьеры / Стили</button>
+          <button class="cat-pill" data-cat="immortal">Ликвидные Immortal</button>
+        </div>
+      </div>
+
+      <div class="liquid-cards-grid" id="liquid-cards-grid">
+        <!-- Populated via JS -->
+      </div>
+    </div>
+
+    <!-- TAB CONTENT: ARBITRAGE & PROFIT CALCULATOR -->
+    <div id="tab-calc" class="tab-pane">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Калькулятор окупаемости и арбитража</h2>
+          <p class="section-subtitle">
+            Рассчитайте чистую прибыль с учетом комиссий Steam (13.04%), Market.dota2 (5%), Buff163 (2.5%) и затрат на вывод.
+          </p>
+        </div>
+      </div>
+
+      <div class="calc-grid">
+        <!-- Input parameters -->
+        <div class="calc-card">
+          <h3 class="calc-card-title">Параметры сделки</h3>
+          
+          <div class="calc-field">
+            <label>Где покупаем (Площадка А):</label>
+            <select id="calc-buy-market" class="calc-select">
+              <option value="dota2net" selected>Market.Dota2 (Комиссия покупки 0%)</option>
+              <option value="buff">Buff163 (Комиссия покупки 0%)</option>
+              <option value="steam">Steam Community Market (Вкл. комиссию)</option>
+              <option value="dmarket">DMarket</option>
+              <option value="custom">Свой источник / С рук</option>
+            </select>
+          </div>
+
+          <div class="calc-field">
+            <label>Цена покупки (<span class="currency-symbol">₽</span>):</label>
+            <input type="number" id="calc-buy-price" class="calc-input" value="3000" min="0" step="50">
+          </div>
+
+          <div class="calc-field">
+            <label>Где продаем (Площадка Б):</label>
+            <select id="calc-sell-market" class="calc-select">
+              <option value="steam" selected>Steam Market (Комиссия 13.04% / деление на 1.15)</option>
+              <option value="dota2net">Market.Dota2 (Комиссия 5%)</option>
+              <option value="buff">Buff163 (Комиссия 2.5%)</option>
+              <option value="real">В реальные деньги / На карту (Комиссия ~30%)</option>
+            </select>
+          </div>
+
+          <div class="calc-field">
+            <label>Ожидаемая цена продажи (<span class="currency-symbol">₽</span>):</label>
+            <input type="number" id="calc-sell-price" class="calc-input" value="4800" min="0" step="50">
+          </div>
+
+          <div class="calc-field-checkbox">
+            <label>
+              <input type="checkbox" id="calc-cashout-tax" checked>
+              Учесть процент вывода в реал (-5% СБП / карта)
+            </label>
+          </div>
+        </div>
+
+        <!-- Profit Summary Card -->
+        <div class="calc-card result-card">
+          <h3 class="calc-card-title">Результат расчета</h3>
+
+          <div class="calc-metrics">
+            <div class="metric-item">
+              <span class="metric-label">Чистыми после всех комиссий:</span>
+              <span class="metric-val" id="calc-net-payout">0 ₽</span>
+            </div>
+            <div class="metric-item highlight">
+              <span class="metric-label">Чистый профит:</span>
+              <span class="metric-val profit-positive" id="calc-net-profit">+0 ₽</span>
+            </div>
+            <div class="metric-item highlight">
+              <span class="metric-label">Процент окупаемости (ROI):</span>
+              <span class="metric-val profit-positive" id="calc-roi">+0%</span>
+            </div>
+            <div class="metric-item">
+              <span class="metric-label">Комиссии площадок съедят:</span>
+              <span class="metric-val" id="calc-total-fees">0 ₽</span>
+            </div>
+          </div>
+
+          <div class="verdict-banner" id="calc-verdict">
+            🔥 Выгодная сделка! Высокий спред окупаемости.
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-content">
+      <div class="footer-left">
+        <span class="footer-brand">DotaRadar PRO</span>
+        <span class="footer-copy">Сделано для эффективного трейда и снайпинга редких предметов Dota 2. Готово для публикации на GitHub Pages.</span>
+      </div>
+      <div class="footer-right">
+        <span class="footer-note">Цены обновляются в реальном времени. Все товарные знаки принадлежат Valve Corporation.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
